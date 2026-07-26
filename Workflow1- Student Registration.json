@@ -1,0 +1,286 @@
+{
+  "name": "Workflow1- Student Registration",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0",
+          "mode": "list",
+          "cachedResultName": "University Student Records",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1380015376,
+          "mode": "list",
+          "cachedResultName": "Form Responses 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0/edit#gid=1380015376"
+        },
+        "event": "rowAdded",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "d99a85a6-436d-40b0-90af-73f03391c267",
+      "name": "Google Sheets Trigger",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "Ov3Rqd6GOSoeTBPY",
+          "name": "Google Sheets Trigger account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a7bff1b8-6caf-4bee-8486-f0b21270831f",
+              "name": "student_name",
+              "value": "={{ $json['Full Name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "0f8b9fe7-1cec-4066-bf62-13bfa1982633",
+              "name": "email",
+              "value": "={{ $json['Email Address  '] }}",
+              "type": "string"
+            },
+            {
+              "id": "daafdf11-1bdf-4ab1-865f-de18a97914b8",
+              "name": "roll_no",
+              "value": "={{ $json['Roll No.'] }}",
+              "type": "string"
+            },
+            {
+              "id": "390da3a3-2119-4197-aec5-24bbbf1901b3",
+              "name": "course",
+              "value": "={{ $json.Course }}",
+              "type": "string"
+            },
+            {
+              "id": "4b94aceb-fc6c-4172-bd6e-84f902bf9dd1",
+              "name": "semester",
+              "value": "={{ $json.Semester }}",
+              "type": "number"
+            },
+            {
+              "id": "4783d51c-1c9c-43a1-8b43-bb422073f0e7",
+              "name": "timestamp",
+              "value": "={{ $json.Timestamp }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "fb10c9f4-54e5-408e-83e4-3c4e2a76578a",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0",
+          "mode": "list",
+          "cachedResultName": "University Student Records",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Students",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Timestamp": "={{$json.timestamp}}",
+            "Email": "={{$json.email}}",
+            "Student_Name": "={{$json.student_name}}",
+            "Roll_No": "={{$json.roll_no}}",
+            "Course": "={{$json.course}}",
+            "Semester": "={{$json.semester}}",
+            "Status": "Registered"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Student_Name",
+              "displayName": "Student_Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Roll_No",
+              "displayName": "Roll_No",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Course",
+              "displayName": "Course",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Semester",
+              "displayName": "Semester",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        416,
+        0
+      ],
+      "id": "f05cf823-123e-4b39-8d0b-5021faf79616",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YIFgMUyWUUx9rH9T",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{$json.Email}}",
+        "subject": "Welcome to University — Registration Confirmed!",
+        "message": "=Hi {{$json.Student_Name}}, your registration for {{$json.Course}} (Semester {{$json.Semester}}) is confirmed. Your roll number is {{ $json.Roll_No }}. Welcome aboard!",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        624,
+        0
+      ],
+      "id": "8d46dace-6aac-41c8-bc81-374ccc0282d7",
+      "name": "Send a message",
+      "webhookId": "e61c1c6b-ab6a-4988-b55e-e2a1490ab379",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "sHtp5sER1NcQnAzV",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Sheets Trigger": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "c7bc2dfe-7636-4b5c-ae46-8d8c81f1b7d8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b5bd94180f8ae99b82804bf02bb7eb4c9bd66981a785b6b9f69433e3423a545b"
+  },
+  "nodeGroups": [],
+  "id": "lUXRSffAO6F1vCAt",
+  "tags": []
+}

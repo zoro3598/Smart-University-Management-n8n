@@ -1,0 +1,664 @@
+{
+  "name": "Workflow2- Attendance Managment",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0",
+          "mode": "list",
+          "cachedResultName": "University Student Records",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 476064755,
+          "mode": "list",
+          "cachedResultName": "Form Responses 2",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0/edit#gid=476064755"
+        },
+        "event": "rowAdded",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "04c01814-4ba5-4338-826c-81fedec90026",
+      "name": "Google Sheets Trigger",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "Ov3Rqd6GOSoeTBPY",
+          "name": "Google Sheets Trigger account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4c4f2e97-1545-49b5-b956-ac9e6f1baf9d",
+              "name": "roll_no",
+              "value": "={{ $json['Roll Number'] }}",
+              "type": "string"
+            },
+            {
+              "id": "86d66d84-5166-4751-808f-4c25d6030f3e",
+              "name": "student_name",
+              "value": "={{ $json['Student Name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "629ba035-84d9-4d3e-b49c-b52715b3aebf",
+              "name": "att_date",
+              "value": "={{ $json.Date }}",
+              "type": "string"
+            },
+            {
+              "id": "78c1b5f7-5a8e-4251-b5da-5ada2d42070f",
+              "name": "status",
+              "value": "={{ $json.Status }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "e77e9773-6f35-492a-83f4-6198d4c14ea6",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0",
+          "mode": "list",
+          "cachedResultName": "University Student Records",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Students",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Roll_No",
+              "lookupValue": "={{ $json.roll_no }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        416,
+        0
+      ],
+      "id": "4d8a147c-022d-4e29-9ea9-b112e780f755",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YIFgMUyWUUx9rH9T",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "157a0715-b93e-4b68-8b16-f335e5e2447d",
+              "leftValue": "={{ $json.Student_Name }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "197904d4-d84d-44f4-b6b0-8f4f863c0b3f",
+              "leftValue": "={{ $json.Student_Name }}",
+              "rightValue": "={{ $('Edit Fields').item.json.student_name }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        624,
+        0
+      ],
+      "id": "9e9c9b1d-3525-4b97-9c09-69359c48a516",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0",
+          "mode": "list",
+          "cachedResultName": "University Student Records",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 561437549,
+          "mode": "list",
+          "cachedResultName": "Attendance_Log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0/edit#gid=561437549"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Timestamp": "={{$('Edit Fields').item.json.att_date}}",
+            "Roll_No": "={{$('Edit Fields').item.json.roll_no}}",
+            "Student_Name": "={{$('Edit Fields').item.json.student_name}}",
+            "Date": "={{$('Edit Fields').item.json.att_date}}",
+            "Status": "={{$('Edit Fields').item.json.status}}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Roll_No",
+              "displayName": "Roll_No",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Student_Name",
+              "displayName": "Student_Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        816,
+        -96
+      ],
+      "id": "520b87a8-e519-4802-81bd-313deb29dd11",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YIFgMUyWUUx9rH9T",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0",
+          "mode": "list",
+          "cachedResultName": "University Student Records",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 941497417,
+          "mode": "list",
+          "cachedResultName": "Errors",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0/edit#gid=941497417"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Timestamp": "={{$now}}",
+            "Workflow_Name": "Attendance Management",
+            "Error_Message": "Name mismatch or not found",
+            "Raw_Data": "={{$('Edit Fields').item.json.roll_no}} - {{$('Edit Fields').item.json.student_name}}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Workflow_Name",
+              "displayName": "Workflow_Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Error_Message",
+              "displayName": "Error_Message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Raw_Data",
+              "displayName": "Raw_Data",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        816,
+        96
+      ],
+      "id": "0c347772-d8f0-4254-854f-f213f7e1fb4b",
+      "name": "Append row in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YIFgMUyWUUx9rH9T",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0",
+          "mode": "list",
+          "cachedResultName": "University Student Records",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 561437549,
+          "mode": "list",
+          "cachedResultName": "Attendance_Log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0/edit#gid=561437549"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Roll_No",
+              "lookupValue": "={{ $('Edit Fields').item.json.roll_no }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1024,
+        -96
+      ],
+      "id": "932a2a87-c0c0-4008-9dda-67fcc91d112b",
+      "name": "Get row(s) in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YIFgMUyWUUx9rH9T",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const rows = items; // all attendance rows for this student\nconst total = rows.length;\nconst present = rows.filter(item => item.json.Status === \"Present\").length;\nconst percentage = total > 0 ? Math.round((present / total) * 100) : 0;\n\nreturn [{\n  json: {\n    roll_no: rows[0]?.json.Roll_No || \"\",\n    student_name: rows[0]?.json.Student_Name || \"\",\n    total_classes: total,\n    present_count: present,\n    attendance_percent: percentage\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1232,
+        -96
+      ],
+      "id": "fa9edd88-e1e1-4bad-9f2a-34b8cec8acf5",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "b3ac90b9-9639-49b8-8e67-ed7403cfd4bc",
+              "leftValue": "={{ $json.attendance_percent }}",
+              "rightValue": 75,
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1408,
+        -32
+      ],
+      "id": "43ea30c1-676d-4559-ae78-945e2518cd2d",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{$('Get row(s) in sheet').item.json.Email}}",
+        "subject": "⚠️ Low Attendance Alert",
+        "emailType": "text",
+        "message": "=Hi {{$json.student_name}}, your current attendance is {{$json.attendance_percent}}%, which is below the required 75%. Please improve your attendance to avoid academic penalties.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1680,
+        -96
+      ],
+      "id": "44eb3107-9e45-491f-a0c5-020cc1dfab68",
+      "name": "Send a message",
+      "webhookId": "8ff4d635-2ac4-43b0-b064-63e98637c8a3",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "sHtp5sER1NcQnAzV",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0",
+          "mode": "list",
+          "cachedResultName": "University Student Records",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1863489010,
+          "mode": "list",
+          "cachedResultName": "Attendance_Summary",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0/edit#gid=1863489010"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Roll_No": "={{ $json.roll_no }}",
+            "Total_classes": "={{ $json.total_classes }}",
+            "Present_Count": "={{ $json.present_count }}",
+            "Attendence_Percentage": "={{ $json.attendance_percent }}"
+          },
+          "matchingColumns": [
+            "Roll_No"
+          ],
+          "schema": [
+            {
+              "id": "Roll_No",
+              "displayName": "Roll_No",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Total_classes",
+              "displayName": "Total_classes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Present_Count",
+              "displayName": "Present_Count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Attendence_Percentage",
+              "displayName": "Attendence_Percentage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1408,
+        -192
+      ],
+      "id": "9a84bd23-82ec-4365-b572-1c2e06e1087c",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YIFgMUyWUUx9rH9T",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Sheets Trigger": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Append row in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "fa4a240a-b154-4644-827b-9f0826f76189",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b5bd94180f8ae99b82804bf02bb7eb4c9bd66981a785b6b9f69433e3423a545b"
+  },
+  "nodeGroups": [],
+  "id": "30Ea2PHOYwPBnhlY",
+  "tags": []
+}

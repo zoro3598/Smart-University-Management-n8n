@@ -1,0 +1,252 @@
+{
+  "name": "Workflow5- Reports",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1
+              ]
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -192,
+        16
+      ],
+      "id": "430e66ec-2df1-4d7e-83b2-97787b849cb8",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0",
+          "mode": "list",
+          "cachedResultName": "University Student Records",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1546018547,
+          "mode": "list",
+          "cachedResultName": "Result",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0/edit#gid=1546018547"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        16,
+        16
+      ],
+      "id": "4d62dcc5-60f7-4c87-9172-88fa3c95d7f9",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YIFgMUyWUUx9rH9T",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const rows = items;\nconst total = rows.length;\nconst passCount = rows.filter(item => item.json.Result === \"Pass\").length;\nconst failCount = total - passCount;\nconst passRate = total > 0 ? Math.round((passCount / total) * 100) : 0;\n\nreturn [{\n  json: {\n    report_date: new Date().toLocaleDateString(),\n    total_submissions: total,\n    pass_count: passCount,\n    fail_count: failCount,\n    pass_rate: passRate\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        16
+      ],
+      "id": "7e87159c-84e8-4e34-b1c7-cac36bc6d087",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0",
+          "mode": "list",
+          "cachedResultName": "University Student Records",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2020196542,
+          "mode": "list",
+          "cachedResultName": "Report",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0/edit#gid=2020196542"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Report_Data": "={{ $json.report_date }}",
+            "Total_Submission": "={{ $json.total_submissions }}",
+            "Pass_Count": "={{ $json.pass_count }}",
+            "Fail_Count": "={{ $json.fail_count }}",
+            "Pass_Rate": "={{ $json.pass_rate }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Report_Data",
+              "displayName": "Report_Data",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Total_Submission",
+              "displayName": "Total_Submission",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Pass_Count",
+              "displayName": "Pass_Count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Fail_Count",
+              "displayName": "Fail_Count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Pass_Rate",
+              "displayName": "Pass_Rate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        432,
+        16
+      ],
+      "id": "9861a3cc-bf3c-4d17-b3d8-f73c89a479a6",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YIFgMUyWUUx9rH9T",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "arynsingh25504@gmail.com",
+        "subject": "=\tWeekly Academic Report — {{ $json.Report_Data }}",
+        "emailType": "text",
+        "message": "=Weekly Report:\\n\\nTotal Submissions:{{ $json.Total_Submission }}\\nPassed:{{ $json.Pass_Count }}\\nFailed:{{ $json.Fail_Count }}\\nPass Rate: {{ $json.Pass_Rate }}%",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        640,
+        16
+      ],
+      "id": "98928ed7-1e68-4211-bc14-0062cffbe497",
+      "name": "Send a message",
+      "webhookId": "93e74a32-29b5-463e-969c-97c0c1696a39",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "sHtp5sER1NcQnAzV",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "e30caece-3bd6-4713-86de-7a378dc5aad8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b5bd94180f8ae99b82804bf02bb7eb4c9bd66981a785b6b9f69433e3423a545b"
+  },
+  "nodeGroups": [],
+  "id": "o2nHLFwTAp6FgL0x",
+  "tags": []
+}

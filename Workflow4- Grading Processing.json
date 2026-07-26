@@ -1,0 +1,431 @@
+{
+  "name": "Workflow4- Grading Processing",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0",
+          "mode": "list",
+          "cachedResultName": "University Student Records",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1525570767,
+          "mode": "list",
+          "cachedResultName": "Assignment",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0/edit#gid=1525570767"
+        },
+        "event": "rowAdded",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "0003dc82-15ca-41bc-8a2b-302b75158195",
+      "name": "Google Sheets Trigger",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "Ov3Rqd6GOSoeTBPY",
+          "name": "Google Sheets Trigger account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "5dfe1e1f-7681-404a-ae62-3586f0c18c03",
+              "leftValue": "={{$('Google Sheets Trigger').item.json.AI_Score}}",
+              "rightValue": 5,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        416,
+        0
+      ],
+      "id": "ea4a17d7-83d5-46e9-a472-ef1a3848d823",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0",
+          "mode": "list",
+          "cachedResultName": "University Student Records",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Students",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Roll_No",
+              "lookupValue": "={{ $json.Roll_No }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        0
+      ],
+      "id": "67b1b3aa-fe2e-4bc4-9b67-d6246534aaef",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YIFgMUyWUUx9rH9T",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Get row(s) in sheet').item.json.Email }}",
+        "subject": "={{$json.Result === \"Pass\" ? \"Assignment Result — Pass ✅\" : \"Assignment Result — Needs Improvement ⚠️\"}}",
+        "emailType": "text",
+        "message": "={{$json.Result === \"Pass\" ? \"Hi \" + $json.Student_Name + \", you passed \\\"\" + $json.Assignment_Title + \"\\\" with a score of \" + $json.AI_Score + \"/10. Great work!\" : \"Hi \" + $json.Student_Name + \", your submission for \\\"\" + $json.Assignment_Title + \"\\\" scored \" + $json.AI_Score + \"/10, below passing. Please review feedback and resubmit.\"}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        880,
+        -32
+      ],
+      "id": "5b465e81-3381-4a63-96e4-bdec716f5ad8",
+      "name": "Send a message",
+      "webhookId": "a1f067f2-4faf-4e01-a8c1-ed17b4be22f3",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "sHtp5sER1NcQnAzV",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0",
+          "mode": "list",
+          "cachedResultName": "University Student Records",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1546018547,
+          "mode": "list",
+          "cachedResultName": "Result",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0/edit#gid=1546018547"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Timestamp": "={{ $json.Timestamp }}",
+            "Roll_No": "={{ $json.Roll_No }}",
+            "Student_Name": "={{ $json['Student_Name '] }}",
+            "Assignment_Title": "={{ $json.Assignment_Title }}",
+            "AI_Score": "={{ $json.AI_Score }}",
+            "Result": "Pass"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Roll_No",
+              "displayName": "Roll_No",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Student_Name",
+              "displayName": "Student_Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Assignment_Title",
+              "displayName": "Assignment_Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "AI_Score",
+              "displayName": "AI_Score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Result",
+              "displayName": "Result",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        640,
+        -128
+      ],
+      "id": "41bafbbf-de97-4771-90ce-789f977d70cf",
+      "name": "Pass",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YIFgMUyWUUx9rH9T",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0",
+          "mode": "list",
+          "cachedResultName": "University Student Records",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1546018547,
+          "mode": "list",
+          "cachedResultName": "Result",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0/edit#gid=1546018547"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Timestamp": "={{ $('Google Sheets Trigger').item.json.Timestamp }}",
+            "Roll_No": "={{ $('Google Sheets Trigger').item.json.Roll_No }}",
+            "Student_Name": "={{ $('Google Sheets Trigger').item.json['Student_Name '] }}",
+            "Assignment_Title": "={{ $('Google Sheets Trigger').item.json.Assignment_Title }}",
+            "AI_Score": "={{ $('Google Sheets Trigger').item.json.AI_Score }}",
+            "Result": "Fail"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Roll_No",
+              "displayName": "Roll_No",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Student_Name",
+              "displayName": "Student_Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Assignment_Title",
+              "displayName": "Assignment_Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "AI_Score",
+              "displayName": "AI_Score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Result",
+              "displayName": "Result",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        640,
+        80
+      ],
+      "id": "1d935294-80c0-4d28-b0f3-b30c5e1644da",
+      "name": "Fail",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YIFgMUyWUUx9rH9T",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Sheets Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Pass",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Fail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pass": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fail": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "6f56b88d-48af-409c-a2c5-2dc7454a0bd8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b5bd94180f8ae99b82804bf02bb7eb4c9bd66981a785b6b9f69433e3423a545b"
+  },
+  "nodeGroups": [],
+  "id": "kGM65giYCeXiRvq3",
+  "tags": []
+}

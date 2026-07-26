@@ -1,0 +1,324 @@
+{
+  "name": "Workflow3- Assignment Evaluation",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0",
+          "mode": "list",
+          "cachedResultName": "University Student Records",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2120914838,
+          "mode": "list",
+          "cachedResultName": "Form Responses 3",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0/edit#gid=2120914838"
+        },
+        "event": "rowAdded",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "03102f6a-41b3-4917-8dc7-0303e5ed5b7b",
+      "name": "Google Sheets Trigger",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "Ov3Rqd6GOSoeTBPY",
+          "name": "Google Sheets Trigger account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4f8dc352-4dcd-4b55-b93c-98ce3e56a695",
+              "name": "roll_no",
+              "value": "={{ $json['Roll Number '] }}",
+              "type": "string"
+            },
+            {
+              "id": "211c5694-be2d-4989-a81f-a4f832fe3ad2",
+              "name": "student_name  ",
+              "value": "={{ $json['Student Name  '] }}",
+              "type": "string"
+            },
+            {
+              "id": "80464aa1-b4d3-4ee0-bb8f-f05a3dd9d6d1",
+              "name": "  assignment_title  ",
+              "value": "={{ $json['  Assignment Title  '] }}",
+              "type": "string"
+            },
+            {
+              "id": "d74adac5-db36-4c58-a376-95776577d464",
+              "name": "  submission_text  ",
+              "value": "={{ $json['  Submission Text  '] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "561a1d36-2e31-4055-bfd7-e991ec8fd465",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4",
+          "mode": "list",
+          "cachedResultName": "GPT-4"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=You are grading a student assignment. \n\nAssignment Title: {{ $json['  assignment_title  '] }}\nStudent Submission: {{ $json['  submission_text  '] }}\n\nGrade this out of 10 based on clarity, correctness, and depth of understanding. \nRespond ONLY in this exact format:\nScore: [number]/10\nFeedback: [2-3 sentences of constructive feedback]"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        416,
+        0
+      ],
+      "id": "dd8a7f49-d7f5-4ce8-aa2a-03965926f87c",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": "MaDc5kbT5QvhbA3X",
+          "name": "OpenAI account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c4385c42-2a0a-4306-a7ed-8f897fe45c6d",
+              "name": "ai_score",
+              "value": "={{$json.output[0].content[0].text.match(/Score:\\s*(\\d+)/)[1]}}",
+              "type": "string"
+            },
+            {
+              "id": "ce347906-8f28-4611-96c1-a3a89296f47d",
+              "name": "ai_feedback",
+              "value": "={{$json.output[0].content[0].text.match(/Feedback:\\s*([\\s\\S]*)/)[1].trim()}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        768,
+        0
+      ],
+      "id": "9fb02a0a-8789-41b2-a154-4f63f14b6058",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0",
+          "mode": "list",
+          "cachedResultName": "University Student Records",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1525570767,
+          "mode": "list",
+          "cachedResultName": "Assignment",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1G0LUe7mj5YS8uxWxVh9EAWtTcrdYxqKNLYy8DGIX_k0/edit#gid=1525570767"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Timestamp": "={{$now}}",
+            "Student_Name ": "={{ $('Edit Fields').item.json['student_name  '] }}",
+            "Submission_Text": "={{ $('Edit Fields').item.json['  submission_text  '] }}",
+            "Assignment_Title": "={{ $('Edit Fields').item.json['  assignment_title  '] }}",
+            "Roll_No": "={{ $('Edit Fields').item.json.roll_no }}",
+            "AI_Score": "={{ $json.ai_score }}",
+            "AI_Feedback": "={{ $json.ai_feedback }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Roll_No",
+              "displayName": "Roll_No",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Student_Name ",
+              "displayName": "Student_Name ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Assignment_Title",
+              "displayName": "Assignment_Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Submission_Text",
+              "displayName": "Submission_Text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "AI_Score",
+              "displayName": "AI_Score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "AI_Feedback",
+              "displayName": "AI_Feedback",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        976,
+        0
+      ],
+      "id": "6e0008cd-01e9-45a1-b616-8d7abcee6891",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YIFgMUyWUUx9rH9T",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Sheets Trigger": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "586cd340-a240-4abb-be64-b6b34ce66a4e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b5bd94180f8ae99b82804bf02bb7eb4c9bd66981a785b6b9f69433e3423a545b"
+  },
+  "nodeGroups": [],
+  "id": "EUe58ueiWnwmPn2h",
+  "tags": []
+}
